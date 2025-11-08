@@ -121,12 +121,20 @@ export async function saveCharacter(
   }
 
   try {
-    if (!supabase) throw new Error('Supabase not configured');
+    if (!supabase) {
+      throw new Error('Supabase client not initialized. Check your environment variables.');
+    }
     
     // Get current user if authenticated, otherwise use null for anonymous
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
+
+    // Auth error is OK - we'll just use null for user_id
+    if (authError && authError.message !== 'Invalid Refresh Token: Refresh Token Not Found') {
+      console.warn('Auth check warning:', authError);
+    }
 
     const { data, error } = await supabase
       .from('characters')
@@ -139,14 +147,33 @@ export async function saveCharacter(
       .single();
 
     if (error) {
-      console.error('Error saving character:', error);
-      throw error;
+      console.error('Supabase error saving character:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      
+      // Create a more informative error
+      const enhancedError: any = new Error(error.message || 'Failed to save character');
+      enhancedError.code = error.code;
+      enhancedError.details = error.details;
+      enhancedError.hint = error.hint;
+      throw enhancedError;
+    }
+
+    if (!data || !data.id) {
+      throw new Error('No data returned from Supabase insert');
     }
 
     return data.id;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving character:', error);
-    throw error;
+    // Re-throw with more context
+    if (error.code || error.message) {
+      throw error;
+    }
+    throw new Error(`Failed to save character: ${error?.message || 'Unknown error'}`);
   }
 }
 

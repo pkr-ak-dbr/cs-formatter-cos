@@ -25,12 +25,27 @@ export default function UploadPage() {
         const parsedCharacter = parseCharacterData(jsonData);
         
         // Save character to storage
-        const characterId = await saveCharacter(parsedCharacter, parsedCharacter.name || 'Unnamed Character');
-        
-        // Navigate to character page
-        router.push(`/character/${characterId}`);
-      } catch (err) {
-        setError('Failed to parse JSON file. Please ensure it is a valid Foundry VTT character export.');
+        try {
+          const characterId = await saveCharacter(parsedCharacter, parsedCharacter.name || 'Unnamed Character');
+          
+          // Navigate to character page
+          router.push(`/character/${characterId}`);
+        } catch (saveError: any) {
+          console.error('Save error:', saveError);
+          // Provide helpful error messages
+          if (saveError?.message?.includes('Row Level Security') || saveError?.code === '42501') {
+            setError('Database permission error. Please check your Supabase Row Level Security policies. If using the public migration, make sure it was run correctly.');
+          } else if (saveError?.message?.includes('relation') || saveError?.code === '42P01') {
+            setError('Database table not found. Please run the SQL migration in your Supabase dashboard.');
+          } else if (saveError?.message?.includes('JWT') || saveError?.code === 'PGRST301') {
+            setError('Authentication error. Please check your Supabase API keys in environment variables.');
+          } else {
+            setError(`Failed to save character: ${saveError?.message || 'Unknown error'}. Check browser console for details.`);
+          }
+          setIsLoading(false);
+        }
+      } catch (err: any) {
+        setError(`Failed to parse JSON file: ${err?.message || 'Invalid JSON format'}. Please ensure it is a valid Foundry VTT character export.`);
         setIsLoading(false);
       }
     };

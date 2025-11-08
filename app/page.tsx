@@ -37,12 +37,20 @@ export default function PartyList() {
                 Manage your party's character sheets
               </p>
             </div>
-            <Link
-              href="/upload"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center"
-            >
-              + Add Character
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/inventory"
+                className="px-4 py-2 bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-lg font-medium transition-colors hover:bg-zinc-300 dark:hover:bg-zinc-700 text-center"
+              >
+                View Inventory
+              </Link>
+              <Link
+                href="/upload"
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-center"
+              >
+                + Add Character
+              </Link>
+            </div>
           </div>
         </div>
 
