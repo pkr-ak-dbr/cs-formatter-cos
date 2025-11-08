@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+You are an experienced full-stack cloud developer. 
+This is a personal project that is used to build dynamic D&D character sheets by using json from Foundry VTT. 
+It will be uploaded on Vercel using the free tier. That is why Next.js was chosen. 
+
