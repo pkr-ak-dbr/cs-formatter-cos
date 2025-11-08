@@ -142,7 +142,7 @@ function extractAbilityScores(data: any): AbilityScores | undefined {
   if (!abilities) return undefined;
 
   const scores: AbilityScores = {};
-  const abilityNames = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+  const abilityNames: Array<keyof AbilityScores> = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 
   abilityNames.forEach(ability => {
     const abilityData = abilities[ability];

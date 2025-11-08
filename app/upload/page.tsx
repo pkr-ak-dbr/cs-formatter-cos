@@ -19,13 +19,13 @@ export default function UploadPage() {
     setError(null);
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const jsonData = JSON.parse(e.target?.result as string);
         const parsedCharacter = parseCharacterData(jsonData);
         
         // Save character to storage
-        const characterId = saveCharacter(parsedCharacter, parsedCharacter.name || 'Unnamed Character');
+        const characterId = await saveCharacter(parsedCharacter, parsedCharacter.name || 'Unnamed Character');
         
         // Navigate to character page
         router.push(`/character/${characterId}`);

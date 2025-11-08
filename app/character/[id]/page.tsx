@@ -14,22 +14,25 @@ export default function CharacterPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const characterId = params?.id as string;
-    if (!characterId) {
-      setError('Character ID not found');
-      setLoading(false);
-      return;
-    }
+    const loadCharacter = async () => {
+      const characterId = params?.id as string;
+      if (!characterId) {
+        setError('Character ID not found');
+        setLoading(false);
+        return;
+      }
 
-    const storedCharacter = getCharacterById(characterId);
-    if (!storedCharacter) {
-      setError('Character not found');
-      setLoading(false);
-      return;
-    }
+      const storedCharacter = await getCharacterById(characterId);
+      if (!storedCharacter) {
+        setError('Character not found');
+        setLoading(false);
+        return;
+      }
 
-    setCharacter(storedCharacter.data);
-    setLoading(false);
+      setCharacter(storedCharacter.data);
+      setLoading(false);
+    };
+    loadCharacter();
   }, [params]);
 
   if (loading) {

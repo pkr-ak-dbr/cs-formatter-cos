@@ -9,12 +9,17 @@ export default function PartyList() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
-    setCharacters(getAllCharacters());
+    const loadCharacters = async () => {
+      const chars = await getAllCharacters();
+      setCharacters(chars);
+    };
+    loadCharacters();
   }, []);
 
-  const handleDelete = (id: string) => {
-    deleteCharacter(id);
-    setCharacters(getAllCharacters());
+  const handleDelete = async (id: string) => {
+    await deleteCharacter(id);
+    const chars = await getAllCharacters();
+    setCharacters(chars);
     setShowDeleteConfirm(null);
   };
 
